@@ -59,7 +59,7 @@ pcd.points.clear()
 pcd.points.extend(pts_perturbed)
 
 # Write a new point cloud
-o3d.io.write_point_cloud("point_cloud_perturbed.xyz", pcd)
+o3d.io.write_point_cloud("Discrete_Insert_1", pcd)
 
 print(pcd)
 
