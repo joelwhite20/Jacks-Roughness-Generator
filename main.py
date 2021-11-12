@@ -27,8 +27,9 @@ start_time = time.time()
 
 input_path  = os.getcwd()+"/"
 output_path = os.getcwd()+"/"
-mesh_file   = "poly_medium_tip_rigid_10k.stl"
-
+mesh_file   = "Discrete_Insert_1.stl"
+file_name = mesh_file.split('.')[0]
+folder = file_name+"_Outputs"
 ##############################################################################
 # Alter these fourier series function parameters
 N=100           # Upper limit of summation
@@ -36,12 +37,16 @@ M=100           # Upper limit of summation
 lambda_k=120    # Max amplitude
 ##############################################################################
 
+# If folder doesn't exit, make one to save all the files into
+if not os.path.exists(folder):
+    os.makedirs(folder)
+
 # Read an .STL or .PLY mesh, pass to point cloud writer
 mesh = mesh_reader(input_path, mesh_file)
 
 #  Poisson disk sampling to create point cloud
-sample_points = 300000
-pcd = point_cloud_writer(mesh, sample_points)
+sample_points = 100000#300000
+pcd = point_cloud_writer(mesh, sample_points, file_name, folder)
 
 # Create amplitude and phase shift matrices
 print("Preparing randomized amplitudes and phases...")
@@ -53,19 +58,22 @@ pts = np.float32(np.asarray(pcd.points))
 pts_perturbed, double_sum, B = perturb.fourier_series(pts, phi, A, lambda_k, sample_points, N, M)
 
 # Clear old elements
-pcd.points.clear()
+print("Clearing old elements...")
+pcd.clear()
 
 # Replace with new perturbed elements
+print("Replacing point cloud elements with perturbed points...")
 pcd.points.extend(pts_perturbed)
 
 # Write a new point cloud
-o3d.io.write_point_cloud("Discrete_Insert_1", pcd)
+print("Writing to file...")
+o3d.io.write_point_cloud(folder+'/'+file_name+"_point_cloud_perturbed.xyz", pcd)
 
 print(pcd)
 
 # Export fourier parameters to excel file
-exporter(A, phi, lambda_k, N, M, pts_perturbed, output_path)
+exporter(A, phi, lambda_k, N, M, pts_perturbed, folder, file_name)
 
-np.savetxt("coords.csv", pts_perturbed, delimiter=",")
+np.savetxt(folder+'/'+file_name+"_coords.csv", pts_perturbed, delimiter=",")
 
 print("Calculations completed in %.2f seconds" % (time.time() - start_time))

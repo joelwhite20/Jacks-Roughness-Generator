@@ -13,9 +13,10 @@ Created on Thu Dec 17 17:26:31 2020
 
     Texas A & M University
 """
+
 import pandas as pd
 
-def exporter(A, phi, lambda_k, N, M, pts_perturbed, output_path):
+def exporter(A, phi, lambda_k, N, M, pts_perturbed, folder, file_name):
     """
     This module exports parameters pertinent to the quasi-random
     rough surface generator
@@ -30,7 +31,7 @@ def exporter(A, phi, lambda_k, N, M, pts_perturbed, output_path):
     df_pts = pd.DataFrame(pts_perturbed)
 
     # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter(output_path+"fourier_parameters.xlsx", engine='xlsxwriter')
+    writer = pd.ExcelWriter(folder+'/'+file_name+"_fourier_parameters.xlsx", engine='xlsxwriter')
 
     # Convert the dataframe to an XlsxWriter Excel object.
     df_A.to_excel(writer, sheet_name='Amplitude', index=False, header=0)

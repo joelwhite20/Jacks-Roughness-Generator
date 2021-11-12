@@ -27,7 +27,7 @@ def mesh_reader(input_path, mesh_file):
     print(mesh)
     return mesh
 
-def point_cloud_writer(mesh, sample_points):
+def point_cloud_writer(mesh, sample_points, file_name, folder):
     """"
     Use Poisson disk sampling to create a point cloud from the mesh
     object using sample points, then write to wdir
@@ -39,5 +39,5 @@ def point_cloud_writer(mesh, sample_points):
 
     # Paint the point cloud
     pcd.paint_uniform_color([1, 1, 1])
-    o3d.io.write_point_cloud("point_cloud.xyz", pcd)
+    o3d.io.write_point_cloud(folder+'/'+file_name+"_point_cloud.xyz", pcd)
     return pcd
